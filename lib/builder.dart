@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor.dart';
 import 'package:build/build.dart';
 import 'package:pdx_data_tools/src/metadata/data_object.dart';
@@ -99,19 +101,33 @@ class PdxDataObjectFactoryGenerator implements Generator {
       var key = annotation.getField("name").toStringValue();
       var val = annotation.getField("defaultValue");
 
-      var valType = val.type;
-      var valVal = valType.name == "Type" ? null : val.toString();
       var fieldName = field.name;
       var fieldType = field.type;
+      var valVal = _getValue(fieldType, val);
+
+      if (valVal is String)
+        valVal = '\'$valVal\'';
 
       buffer.write(
           'inst.$fieldName = '
-              'map.containsKey(\'$key\') ? map[\'$key\'] as $fieldType : $valVal;\n'
+          'map.containsKey(\'$key\') ? map[\'$key\'] as $fieldType : $valVal;\n'
       );
     }
     buffer.write('return inst;\n' '}\n');
 
     return buffer.toString();
+  }
+
+  Object _getValue(DartType type, DartObject holder) {
+         if (_matchType(int, type))     return holder.toIntValue();
+    else if (_matchType(double, type))  return holder.toDoubleValue();
+    else if (_matchType(String, type))  return holder.toStringValue();
+    else if (_matchType(bool, type))    return holder.toBoolValue();
+    else if (_matchType(List, type))    return holder.toListValue();
+    else if (_matchType(Map, type))     return holder.toMapValue();
+    else if (_matchType(Type, type))    return holder.toTypeValue();
+    else
+      return null;
   }
 }
 
@@ -173,16 +189,21 @@ class _DataObjectVisitor extends RecursiveElementVisitor<_CompilerDirective> {
   }
 }
 
+bool _matchType(Type refType, DartType type) {
+  final checker = TypeChecker.fromRuntime(refType);
+  return checker.isExactlyType(type);
+}
+
+bool _matchObjectType(Type refType, DartObject object) =>
+  _matchType(refType, object.type);
+
 /*
  * Shameless copy of "matchAnnotation" function in AngularDart's
  * 'annotation_matcher.dart' file
  */
 bool _matchAnnotationType(Type annotationType, ElementAnnotation annotation) {
   try {
-    annotation.computeConstantValue();
-    final checker = TypeChecker.fromRuntime(annotationType);
-    final objectType = annotation.constantValue.type;
-    return checker.isExactlyType(objectType);
+    return _matchObjectType(annotationType, annotation.computeConstantValue());
   } catch (ex) {
     String message =
         'Could not resolve the type for annotation. It resolved to'

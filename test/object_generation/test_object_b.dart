@@ -10,3 +10,14 @@ class TestObjectC
 
   TestObjectC();
 }
+
+@PdxDataObject()
+class TestObjectD
+{
+  @DataField("redundant_object", null)
+  DataA dataObjectA;
+
+  TestObjectD();
+}
+
+class DataA { DataA(); }
