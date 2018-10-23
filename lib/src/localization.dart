@@ -12,10 +12,16 @@ class Localization {
 
   Localization();
 
-  void addLocalization(String language, String yamlContent)
-  {
-    var locale = PdxYmlCodec.parse(yamlContent)["l_${language}"];
+  void addLocaleFromYaml(String language, String yamlContent) {
+    addLocale(language, PdxYmlCodec.parse(yamlContent));
+  }
 
+  void addLocale(String language, Map localeMap) {
+    _addLocale(language, localeMap["l_${language}"]);
+  }
+  
+  void _addLocale(String language, Map localeMap) {
+    var locale = localeMap[];
     Map<String, Object> map = null;
     if (_localization.containsKey(language)) {
       var map = _localization[language];
