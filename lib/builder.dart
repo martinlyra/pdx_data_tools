@@ -7,6 +7,8 @@ import 'package:pdx_data_tools/src/metadata/data_object.dart';
 
 import 'package:source_gen/source_gen.dart';
 
+// TODO: Devise a builder that makes use of object_factory.dart
+
 /*
  * Entry point for pdx_data_tool's code generation
  */
@@ -21,6 +23,7 @@ class PdxDataObjectFactoryGenerator implements Generator {
 
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) {
+    // Collect directives for the compiler
     List<_CompilerDirective> compilerDirectives = [];
     for (var element in library.classElements) {
       var directive = element.accept(new _DataObjectVisitor(library));
@@ -28,20 +31,58 @@ class PdxDataObjectFactoryGenerator implements Generator {
         compilerDirectives.add(directive);
     }
 
-    if (compilerDirectives.isNotEmpty) {
-      List<String> outputs = [];
-      for (var directive in compilerDirectives) {
-        outputs.add(_generateFactoryCode(library, directive));
-      }
-      return outputs.join("\n");
+    if (compilerDirectives.isEmpty) return null;
+
+    // Do actual compiling
+    List<String> outputs = [];
+    outputs.add(_generateHeaderCode(library, compilerDirectives));
+    for (var directive in compilerDirectives) {
+      outputs.add(_generateFactoryCode(library, directive));
     }
-
-
-    return null;
+    return outputs.join("\n");
   }
 
+  /**
+   * Generates a string block containing the proper imports required for the
+   * code to work
+   */
+  String _generateHeaderCode
+      (LibraryReader library, List<_CompilerDirective> directives) {
+    final buffer = new StringBuffer();
+
+    // Collect source files
+    var sources = List();
+    for (var directive in directives) {
+      var targetClass = directive.targetClass.key;
+      var fields = directive.targetFields.keys;
+      var classSource = targetClass.source;
+
+      if (!sources.contains(classSource))
+        sources.add(classSource);
+
+      for (var field in fields) {
+        var source = field.type.element.source;
+        if (source.isInSystemLibrary)
+          continue;
+        if (!sources.contains(source))
+          sources.add(source);
+      }
+    }
+
+    // TODO: Handle references from external libraries
+    for (var source in sources) {
+      buffer.write('import \'${source.shortName}\';\n');
+    }
+
+    return buffer.toString();
+  }
+
+  /**
+   * Monolithic function for generating static factory methods for
+   * deserialization of designated objects
+   */
   String _generateFactoryCode
-      (LibraryReader library,_CompilerDirective directive) {
+      (LibraryReader library, _CompilerDirective directive) {
     final buffer = new StringBuffer();
 
     var targetClass = directive.targetClass;
@@ -134,7 +175,7 @@ class _DataObjectVisitor extends RecursiveElementVisitor<_CompilerDirective> {
 
 /*
  * Shameless copy of "matchAnnotation" function in AngularDart's
- * annotation_matcher.dart file
+ * 'annotation_matcher.dart' file
  */
 bool _matchAnnotationType(Type annotationType, ElementAnnotation annotation) {
   try {

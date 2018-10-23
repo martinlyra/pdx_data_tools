@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:pdx_data_tools/src/yml-parser.dart';
+import 'package:pdx_data_tools/src/yml_parser.dart';
 
 final localization = new Localization();
 
