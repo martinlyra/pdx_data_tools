@@ -1,0 +1,17 @@
+name: pdx_data_tools
+description: A library for reading and parsing game data for Paradox games
+# version: 1.0.0
+# homepage:
+# author: Martin Lyrå <martin.lyra.97@gmail.com>
+
+environment:
+  sdk: '>=2.0.0 <3.0.0'
+
+dependencies:
+  build:
+  build_config:
+  source_gen:
+
+dev_dependencies:
+  test:
+  build_runner:

@@ -1,0 +1,19 @@
+targets:
+  $default:
+    builders:
+      pdx_data_tools:
+        enabled: true
+        generate_for:
+          exclude:
+            - "lib/**"
+
+builders:
+  pdx_data_tools:
+    import: "package:pdx_data_tools/builder.dart"
+    builder_factories: ["pdxDataObjectBuilder"]
+    build_extensions:
+      .dart:
+        - ".pdt_factory.dart"
+    auto_apply: dependents
+    build_to: cache
+    #applies_builders: ["source_gen|combining_builder"]
