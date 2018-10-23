@@ -21,16 +21,15 @@ class Localization {
   }
   
   void _addLocale(String language, Map localeMap) {
-    var locale = localeMap[];
     Map<String, Object> map = null;
     if (_localization.containsKey(language)) {
       var map = _localization[language];
       if (map == null)
-        map = locale;
+        map = localeMap;
       else
-        map.addAll(locale);
+        map.addAll(localeMap);
     } else
-      map = locale;
+      map = localeMap;
 
     _localization[language] = map;
 

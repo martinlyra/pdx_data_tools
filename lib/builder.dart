@@ -22,9 +22,11 @@ class PdxDataObjectFactoryGenerator implements Generator {
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) {
     List<_CompilerDirective> compilerDirectives = [];
-    for (var element in library.classElements)
-      compilerDirectives.add(element.accept(new _DataObjectVisitor(library)));
-
+    for (var element in library.classElements) {
+      var directive = element.accept(new _DataObjectVisitor(library));
+      if (directive != null)
+        compilerDirectives.add(directive);
+    }
 
     if (compilerDirectives.isNotEmpty) {
       List<String> outputs = [];
