@@ -1,4 +1,4 @@
-import 'package:pdx_data_tools/src/parser.dart';
+import 'package:pdx_data_tools/src/dat_parser.dart';
 
 class BidirectionalArrayIterator<E> implements BidirectionalIterator<E> {
 

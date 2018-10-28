@@ -1,0 +1,10 @@
+object_a = {
+    string_a = "STRINGA"
+    string_b = "stringB"
+    integer = 9001
+    boolean = yes
+    list_a = {
+        10 20 30 40
+    }
+    double = 0.5
+}
