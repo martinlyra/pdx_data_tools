@@ -21,7 +21,7 @@ class StringIterator extends Iterator<String>{
 
 class PdxDataCodec
 {
-  static const String _numerals = "0123456789";
+  static const String _numerals = "-0123456789";
   static const String _whitespace = "\t\r\n ";
   static const String _linebreak = "\r\n";
 

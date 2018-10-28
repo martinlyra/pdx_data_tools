@@ -2,18 +2,14 @@ import 'package:test/test.dart';
 import 'test_object_a.dart';
 import 'test_object_b.dart';
 
-import 'dart:io';
-
 import 'package:pdx_data_tools/pdx_data_tools.dart';
-
-import 'test_object_a.pdt_factory.g.dart';
-import 'test_object_b.pdt_factory.g.dart';
 
 const String fileContentA = '''
 object_a = {
 string_a = "STRINGA"
 string_b = "stringB"
 integer = 9001
+negative = -5
 boolean = yes
 list_a = {
 10 20 30 40
@@ -47,6 +43,7 @@ void main () {
     print(datB);
     print(datC);
 
+    assert(objA.negative < 0);
     assert(objC.listA != null);
   }
   );

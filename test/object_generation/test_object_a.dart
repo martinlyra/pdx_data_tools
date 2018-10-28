@@ -17,6 +17,9 @@ class TestObjectA
   @DataField("integer", 0)
   int integer;
 
+  @DataField("negative", 0)
+  int negative;
+
   @DataField("double", 0.0)
   double $double;
 

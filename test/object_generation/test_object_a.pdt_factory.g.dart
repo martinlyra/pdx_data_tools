@@ -18,6 +18,8 @@ TestObjectA deserializeTestObjectA(String key, Map map) {
       (map.containsKey('boolean') ? map['boolean'] as bool : null) ?? false;
   inst.integer =
       (map.containsKey('integer') ? map['integer'] as int : null) ?? 0;
+  inst.negative =
+      (map.containsKey('negative') ? map['negative'] as int : null) ?? 0;
   inst.$double =
       (map.containsKey('double') ? map['double'] as double : null) ?? 0.0;
   inst.listA =
