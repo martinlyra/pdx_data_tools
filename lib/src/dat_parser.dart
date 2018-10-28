@@ -69,8 +69,6 @@ class PdxDataCodec
         var key = previousTokens.last as String;
         var value = _parseValue(iterator);
 
-        print("$key: $value");
-
         if (key.startsWith('@')) {
           _variables[key] = value;
           if (_preserveVariables)
@@ -85,9 +83,9 @@ class PdxDataCodec
         previousTokens.add(_parseText(iterator));
     }
 
-    if (res.isNotEmpty)
-      return res;
-    return previousTokens;
+    if (previousTokens.length > 0)
+      return previousTokens;
+    return res;
   }
 
   void _escapeComment(StringIterator iterator)
@@ -168,7 +166,6 @@ class PdxDataCodec
 
       out += char;
     }
-    print(out);
     return out;
   }
 
