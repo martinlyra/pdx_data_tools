@@ -1,5 +1,7 @@
 import 'package:pdx_data_tools/pdx_data_tools.dart';
 
+import 'test_object_b.pdt_factory.g.dart';
+
 @PdxDataObject()
 class TestObjectC
 {
@@ -8,7 +10,13 @@ class TestObjectC
 
   String stringB;
 
+  @DataField("list_a", [])
+  List listA;
+
   TestObjectC();
+
+  factory TestObjectC.deserialize(String key, Map map)
+  => deserializeTestObjectC(key, map);
 }
 
 @PdxDataObject()

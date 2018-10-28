@@ -83,9 +83,11 @@ class PdxDataCodec
         previousTokens.add(_parseText(iterator));
     }
 
-    if (previousTokens.length > 0)
+    if (previousTokens.isNotEmpty)
       return previousTokens;
-    return res;
+    if (res.isNotEmpty)
+      return res;
+    return null;
   }
 
   void _escapeComment(StringIterator iterator)

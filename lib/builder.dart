@@ -110,7 +110,8 @@ class PdxDataObjectFactoryGenerator implements Generator {
 
       buffer.write(
           'inst.$fieldName = '
-          'map.containsKey(\'$key\') ? map[\'$key\'] as $fieldType : $valVal;\n'
+          '(map.containsKey(\'$key\') ?'
+          'map[\'$key\'] as $fieldType : null) ?? $valVal;\n'
       );
     }
     buffer.write('return inst;\n' '}\n');
